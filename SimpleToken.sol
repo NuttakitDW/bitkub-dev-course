@@ -3,12 +3,12 @@ pragma solidity ^0.8.0;
 contract SimpleToken {
 
     string public name;
-    string public ticker;
+    string public symbol;
     uint256 public totalSuply;
 
     mapping(address => uint256) public ledger;
 
-    constructor(string memory _name, string memory _ticker) {
+    constructor(string memory _name, string memory _symbol) {
 
         name = _name;
         ticker = _ticker;
