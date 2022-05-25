@@ -11,7 +11,7 @@ contract SimpleToken {
     constructor(string memory _name, string memory _symbol) {
 
         name = _name;
-        ticker = _ticker;
+        symbol = _symbol;
         totalSuply = 1000;
 
         ledger[msg.sender] = 1000;
