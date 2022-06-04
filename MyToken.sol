@@ -8,7 +8,7 @@ contract MyToken {
     uint256 public circulatingSupply;
     uint256 public decimal;
 
-    mapping(address => uint256) ledger;
+    mapping(address => uint256) public ledger;
     mapping(address => address) trust;
     address public owner;
 
