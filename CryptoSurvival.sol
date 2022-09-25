@@ -1,3 +1,7 @@
+/**
+ *Submitted for verification at Etherscan.io on 2022-09-25
+*/
+
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.0;
@@ -39,7 +43,7 @@ contract CryptoSurvival {
         Open
     }
 
-    Status regis;
+    Status public regis;
 
     function close() public onlyOwner {
         regis = Status.Close;
@@ -176,6 +180,7 @@ contract CryptoSurvival {
         survivorList[msg.sender].lives += 1;
     }
 
+    //???
     function superPowerUp(bytes32 _pass) public {
 
         require(banList[msg.sender] != true, "User get ban.");
@@ -199,7 +204,7 @@ contract CryptoSurvival {
         survivorList[msg.sender].lives = 1;
     }
 
-    //???
+    //Game Changer
     function lastAttack(address[3] memory _target) public {
 
         require(isAction[round][msg.sender] != true, "You're already make an action.");
