@@ -144,6 +144,7 @@ contract CryptoSurvival {
         //You will lost your power, your lives and gain their kills point for notthing.
         else if(survivorList[msg.sender].power < survivorList[_target].power) {
             survivorList[msg.sender].power /= 2;
+            survivorList[_target].power /= 2;
             survivorList[msg.sender].lives -= 1;
             survivorList[_target].kills += 1;
         }
