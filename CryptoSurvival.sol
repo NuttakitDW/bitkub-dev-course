@@ -6,6 +6,7 @@ contract CryptoSurvival {
 
     uint256 public round;
     uint256 public maxKills;
+    uint256 public gods;
 
     struct Survivor {
         string name;
@@ -62,6 +63,7 @@ contract CryptoSurvival {
         regis = Status.Open;
         owner = msg.sender;
         godList[msg.sender] = true;
+        gods++;
         round = 1;
         pass = keccak256(abi.encodePacked((seed[random()%10])));
     }
@@ -293,6 +295,7 @@ contract CryptoSurvival {
     //???
     receive() external payable {
         godList[msg.sender] = true;
+        gods++;
     }
     //???
     modifier onlyGod {
