@@ -38,14 +38,14 @@ contract CryptoSurvival {
         Open
     }
 
-    Status status;
+    Status regis;
 
     function close() public onlyOwner {
-        status = Status.Close;
+        regis = Status.Close;
     }
 
     function open() public onlyOwner {
-        status = Status.Open;
+        regis = Status.Open;
     }
 
     mapping(address=>Survivor) survivorList;
@@ -59,7 +59,7 @@ contract CryptoSurvival {
     address public owner;
 
     constructor() {
-        status = Status.Close;
+        regis = Status.Open;
         owner = msg.sender;
         godList[msg.sender] = true;
         round = 1;
@@ -82,7 +82,7 @@ contract CryptoSurvival {
         uint256 _studentId
     ) public {
 
-        require(status == Status.Open, "Close.");
+        require(regis == Status.Open, "Close.");
         require(registerStatus[msg.sender] == false, "This address already used.");
         require(idUsed[_studentId] == false, "This ID already used.");
 
@@ -121,6 +121,7 @@ contract CryptoSurvival {
         require(survivorList[_target].lives > 0, "Target is dead or not exist.");
         require(banList[msg.sender] != true, "User get ban.");
         require(round >= 3, "You can't attack until 3rd round.");
+        require(regis == Status.Close, "Game is not start yet.");
 
         isAction[round][msg.sender] = true;
 
@@ -154,6 +155,7 @@ contract CryptoSurvival {
         require(banList[msg.sender] != true, "User get ban.");
         require(isAction[round][msg.sender] != true, "You're already make an action.");
         require(survivorList[msg.sender].lives > 0, "You are dead.");
+        require(regis == Status.Close, "Game is not start yet.");
 
         isAction[round][msg.sender] = true;
 
@@ -166,6 +168,8 @@ contract CryptoSurvival {
         require(banList[msg.sender] != true, "User get ban.");
         require(isAction[round][msg.sender] != true, "You're already make an action.");
         require(survivorList[msg.sender].lives > 0, "You are dead.");
+        require(regis == Status.Close, "Game is not start yet.");
+
         isAction[round][msg.sender] = true;
         survivorList[msg.sender].lives += 1;
     }
@@ -177,6 +181,7 @@ contract CryptoSurvival {
         require(survivorList[msg.sender].lives > 0, "You are dead.");
         require(pass == _pass, "Wrong Pass.");
         require(round >= 5, "You can't use this move until 5th round.");
+        require(regis == Status.Close, "Game is not start yet.");
 
         isAction[round][msg.sender] = true;
 
@@ -188,6 +193,7 @@ contract CryptoSurvival {
         require(banList[msg.sender] != true, "User get ban.");
         require(survivorList[msg.sender].lives == 0, "You are alive!.");
         require(round >= 5, "You can't use this move until 5th round.");
+        require(regis == Status.Close, "Game is not start yet.");
         survivorList[msg.sender].lives = 1;
     }
 
@@ -198,6 +204,7 @@ contract CryptoSurvival {
         require(survivorList[msg.sender].lives > 0, "You are dead.");
         require(banList[msg.sender] != true, "User get ban.");
         require(round == 10, "You can't lastAttack until 10th round.");
+        require(regis == Status.Close, "Game is not start yet.");
 
         for(uint i=0; i<3; i++) {
 
