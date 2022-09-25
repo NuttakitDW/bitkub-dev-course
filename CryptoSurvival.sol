@@ -205,13 +205,11 @@ contract CryptoSurvival {
         require(banList[msg.sender] != true, "User get ban.");
         require(round == 10, "You can't lastAttack until 10th round.");
         require(regis == Status.Close, "Game is not start yet.");
+        require(survivorList[_target[0]].lives > 0, "Target is dead or not exist.");
+        require(survivorList[_target[1]].lives > 0, "Target is dead or not exist.");
+        require(survivorList[_target[2]].lives > 0, "Target is dead or not exist.");
 
         for(uint i=0; i<3; i++) {
-
-            require(survivorList[_target[i]].lives > 0, "Target is dead or not exist.");
-
-            isAction[round][msg.sender] = true;
-
             //1. After your finish your attack your power will devide by 2.
             //2. If you win the battle you will get kills point.
             //3. Your enemy will lost thier lives for 1.
@@ -234,6 +232,7 @@ contract CryptoSurvival {
                 survivorList[msg.sender].power /= 2;
             }
         }
+        isAction[round][msg.sender] = true;
         winner();
     }
 
