@@ -71,6 +71,12 @@ contract CryptoSurvival {
         pass = keccak256(abi.encodePacked((seed[random()%10])));
     }
 
+    //Just in case
+    function setRound(uint i) public onlyOwner {
+        round = i;
+        pass = keccak256(abi.encodePacked((seed[random()%10])));
+    }
+
     function register(
         string memory _name,
         uint256 _studentId
@@ -100,7 +106,8 @@ contract CryptoSurvival {
 
     //Look other status.
     //But you need to get into godList first.
-    function otherStatus(address _addr) public onlyGod view returns(Survivor memory) {
+    function godEyes(address _addr) public onlyGod view returns(Survivor memory) {
+        require(round >= 5, "You can't use this move until 5th round.");
         return survivorList[_addr];
     }
 
@@ -169,10 +176,58 @@ contract CryptoSurvival {
         require(isAction[round][msg.sender] != true, "You're already make an action.");
         require(survivorList[msg.sender].lives > 0, "You are dead.");
         require(pass == _pass, "Wrong Pass.");
+        require(round >= 5, "You can't use this move until 5th round.");
 
         isAction[round][msg.sender] = true;
 
         survivorList[msg.sender].power += 99*10**8;
+    }
+
+    //???
+    function revive() public onlyGod {
+        require(banList[msg.sender] != true, "User get ban.");
+        require(survivorList[msg.sender].lives == 0, "You are alive!.");
+        require(round >= 5, "You can't use this move until 5th round.");
+        survivorList[msg.sender].lives = 1;
+    }
+
+    //???
+    function lastAttack(address[3] memory _target) public {
+
+        require(isAction[round][msg.sender] != true, "You're already make an action.");
+        require(survivorList[msg.sender].lives > 0, "You are dead.");
+        require(banList[msg.sender] != true, "User get ban.");
+        require(round == 10, "You can't lastAttack until 10th round.");
+
+        for(uint i=0; i<3; i++) {
+
+            require(survivorList[_target[i]].lives > 0, "Target is dead or not exist.");
+
+            isAction[round][msg.sender] = true;
+
+            //1. After your finish your attack your power will devide by 2.
+            //2. If you win the battle you will get kills point.
+            //3. Your enemy will lost thier lives for 1.
+            if(survivorList[msg.sender].power > survivorList[_target[i]].power) {
+                survivorList[msg.sender].power /= 2;
+                survivorList[_target[i]].lives -= 1;
+                survivorList[msg.sender].kills += 1;
+            }
+
+            //Beware to battle with someone who stringer than you.
+            //You will lost your power, your lives and gain their kills point for notthing.
+            else if(survivorList[msg.sender].power < survivorList[_target[i]].power) {
+                survivorList[msg.sender].power /= 2;
+                survivorList[msg.sender].lives -= 1;
+                survivorList[_target[i]].kills += 1;
+            }
+
+            //If the result of the battle is a draw, you loss your power for nothing.
+            else {
+                survivorList[msg.sender].power /= 2;
+            }
+        }
+        winner();
     }
 
     //Do not cheat or get BAN!!.
@@ -228,12 +283,7 @@ contract CryptoSurvival {
             return 10;
         }
     }
-    //???
-    function revive() public onlyGod {
-        require(banList[msg.sender] != true, "User get ban.");
-        require(survivorList[msg.sender].lives == 0, "You are alive!.");
-        survivorList[msg.sender].lives = 1;
-    }
+
     //???
     receive() external payable {
         godList[msg.sender] = true;
