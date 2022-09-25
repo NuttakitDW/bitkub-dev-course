@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-contract Survival {
+contract CryptoSurvival {
 
     uint256 public round;
     uint256 public maxKills;
@@ -23,7 +23,7 @@ contract Survival {
         Open
     }
 
-    Status public status;
+    Status status;
 
     function close() public onlyOwner {
         status = Status.Close;
@@ -40,7 +40,7 @@ contract Survival {
     mapping(address=>bool) public banList;
     mapping(uint256=>mapping(address=>bool)) public isAction;
     address[] participants;
-    address[] winnerList;
+    string[] winnerList;
     address public owner;
 
     constructor() {
@@ -94,6 +94,7 @@ contract Survival {
         require(survivorList[msg.sender].lives > 0, "You are dead.");
         require(survivorList[_target].lives > 0, "Target is dead.");
         require(banList[msg.sender] != true, "User get ban.");
+        require(round >= 3, "You can't attack until 3rd round.");
 
         isAction[round][msg.sender] = true;
 
@@ -167,13 +168,18 @@ contract Survival {
 
     //Use for loop to get list of winners.
     //It could be more than one winners if they have equal total kills.
-    function winner() public returns(address[] memory) {
+    function winner() public returns(string[] memory) {
         calMaxKills(); //We use it here.
+        delete winnerList;
         for(uint i=0; i<participants.length; i++) {
             if(survivorList[participants[i]].kills == maxKills) {
-                winnerList.push(participants[i]);
+                winnerList.push(survivorList[participants[i]].name);
             }
         }
+        return winnerList;
+    }
+
+    function showWinner() public view returns(string[] memory) {
         return winnerList;
     }
 
@@ -194,6 +200,7 @@ contract Survival {
     //???
     function revive() public onlyGod {
         require(banList[msg.sender] != true, "User get ban.");
+        require(survivorList[msg.sender].lives == 0, "You are alive!.");
         survivorList[msg.sender].lives = 1;
     }
     //???
