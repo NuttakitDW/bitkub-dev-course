@@ -148,11 +148,6 @@ contract CryptoSurvival {
             survivorList[msg.sender].lives -= 1;
             survivorList[_target].kills += 1;
         }
-
-        //If the result of the battle is a draw, you loss your power for nothing.
-        else {
-            survivorList[msg.sender].power /= 2;
-        }
         winner();
     }
 
@@ -222,7 +217,7 @@ contract CryptoSurvival {
             //2. If you win the battle you will get kills point.
             //3. Your enemy will lost thier lives for 1.
             if(survivorList[msg.sender].power > survivorList[_target[i]].power) {
-                survivorList[msg.sender].power /= 2;
+                survivorList[msg.sender].power = survivorList[msg.sender].power * 8/10;
                 survivorList[_target[i]].lives -= 1;
                 survivorList[msg.sender].kills += 1;
             }
@@ -230,15 +225,12 @@ contract CryptoSurvival {
             //Beware to battle with someone who stringer than you.
             //You will lost your power, your lives and gain their kills point for notthing.
             else if(survivorList[msg.sender].power < survivorList[_target[i]].power) {
-                survivorList[msg.sender].power /= 2;
+                survivorList[msg.sender].power = survivorList[msg.sender].power * 8/10;
+                survivorList[_target[i]].power = survivorList[_target[i]].power * 8/10;
                 survivorList[msg.sender].lives -= 1;
                 survivorList[_target[i]].kills += 1;
             }
 
-            //If the result of the battle is a draw, you loss your power for nothing.
-            else {
-                survivorList[msg.sender].power /= 2;
-            }
         }
         isAction[round][msg.sender] = true;
         winner();
