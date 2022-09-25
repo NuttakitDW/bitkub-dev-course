@@ -138,6 +138,7 @@ contract CryptoSurvival {
         else {
             survivorList[msg.sender].power /= 2;
         }
+        winner();
     }
 
     //Increase your power once per turn.
@@ -199,7 +200,7 @@ contract CryptoSurvival {
 
     //Use for loop to get list of winners.
     //It could be more than one winners if they have equal total kills.
-    function winner() public returns(string[] memory) {
+    function winner() public {
         calMaxKills(); //We use it here.
         delete winnerList;
         for(uint i=0; i<participants.length; i++) {
@@ -207,7 +208,6 @@ contract CryptoSurvival {
                 winnerList.push(survivorList[participants[i]].name);
             }
         }
-        return winnerList;
     }
 
     function showWinner() public view returns(string[] memory) {
