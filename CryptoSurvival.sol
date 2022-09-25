@@ -15,6 +15,21 @@ contract CryptoSurvival {
         uint256 lives;
     }
 
+    bytes32 pass;
+
+    string[] seed = [
+        "satoshi",
+        "vitalik",
+        "nuttakit",
+        "charles",
+        "garvin",
+        "nick",
+        "snowden",
+        "john",
+        "tim",
+        "cz"
+    ];
+
     // Returns uint
     // Close  - 0
     // Open  - 1
@@ -48,10 +63,12 @@ contract CryptoSurvival {
         owner = msg.sender;
         godList[msg.sender] = true;
         round = 1;
+        pass = keccak256(abi.encodePacked((seed[random()%10])));
     }
 
     function nextRound() public onlyOwner {
         round++;
+        pass = keccak256(abi.encodePacked((seed[random()%10])));
     }
 
     function register(
@@ -59,10 +76,12 @@ contract CryptoSurvival {
         uint256 _studentId
     ) public {
 
-        require(status == Status.Open, "Close");
+        require(status == Status.Open, "Close.");
         require(registerStatus[msg.sender] == false, "This address already used.");
         require(idUsed[_studentId] == false, "This ID already used.");
+
         registerStatus[msg.sender] = true;
+        idUsed[_studentId] = true;
 
         participants.push(msg.sender);
 
@@ -141,6 +160,18 @@ contract CryptoSurvival {
         require(survivorList[msg.sender].lives > 0, "You are dead.");
         isAction[round][msg.sender] = true;
         survivorList[msg.sender].lives += 1;
+    }
+
+    function superPowerUp(bytes32 _pass) public {
+
+        require(banList[msg.sender] != true, "User get ban.");
+        require(isAction[round][msg.sender] != true, "You're already make an action.");
+        require(survivorList[msg.sender].lives > 0, "You are dead.");
+        require(pass == _pass, "Wrong Pass.");
+
+        isAction[round][msg.sender] = true;
+
+        survivorList[msg.sender].power += 99*10**8;
     }
 
     //Do not cheat or get BAN!!.
