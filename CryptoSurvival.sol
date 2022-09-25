@@ -111,7 +111,7 @@ contract CryptoSurvival {
 
         require(isAction[round][msg.sender] != true, "You're already make an action.");
         require(survivorList[msg.sender].lives > 0, "You are dead.");
-        require(survivorList[_target].lives > 0, "Target is dead.");
+        require(survivorList[_target].lives > 0, "Target is dead or not exist.");
         require(banList[msg.sender] != true, "User get ban.");
         require(round >= 3, "You can't attack until 3rd round.");
 
@@ -200,7 +200,7 @@ contract CryptoSurvival {
 
     //Use for loop to get list of winners.
     //It could be more than one winners if they have equal total kills.
-    function winner() public {
+    function winner() internal {
         calMaxKills(); //We use it here.
         delete winnerList;
         for(uint i=0; i<participants.length; i++) {
